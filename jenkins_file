@@ -17,5 +17,16 @@ pipeline {
                 sh 'scp /var/lib/jenkins/workspace/Declarative_pipeline/webapp/target/webapp.war ubuntu@172.31.4.21:/var/lib/tomcat10/webapps/testapp.war'
             }
         }
+	stage('Continuous Testing') {
+            steps {
+                git 'https://github.com/IntelliqDevops/FunctionalTesting.git'
+                sh 'java -jar  /var/lib/jenkins/workspace/Declarative_pipeline@2/testing.jar'
+            }
+        }
+        stage('Continuous Delivery') {
+            steps {
+                sh 'scp /var/lib/jenkins/workspace/Declarative_pipeline/webapp/target/webapp.war ubuntu@172.31.13.239:/var/lib/tomcat10/webapps/prodapp.war'
+            }
+        }
    }
  }
