@@ -4,29 +4,73 @@ pipeline {
     stages {
         stage('Continuous Download') {
             steps {
-                git 'https://github.com/IntelliqDevops/maven.git'
+                script{
+                    try{
+                        git 'https://github.com/IntelliqDevops/maven.git'
+                    }
+                    catch(Exception e1){
+                        mail bcc: '', body: 'Jenkins failed to Download the code', cc: '', from: '', replyTo: '', subject: 'Download Error', to: 'gitadmin@gmail.com'
+                        exit(1)
+                    }
+                }
+                
             }
         }
         stage('Continuous Build') {
             steps {
-                sh 'mvn package'
+                script{
+                    try{
+                        sh 'mvn package'
+                    }
+                    catch(Exception e2){
+                        mail bcc: '', body: 'Jenkins failed to Build the code', cc: '', from: '', replyTo: '', subject: 'Build Error', to: 'Developer@gmail.com'
+                        exit(2)
+                        
+                    }
+                }
+                
             }
         }
         stage('Continuous Deployment') {
             steps {
-                sh 'scp /var/lib/jenkins/workspace/Declarative_pipeline/webapp/target/webapp.war ubuntu@172.31.4.21:/var/lib/tomcat10/webapps/testapp.war'
+                script{
+                    try{
+                        sh 'scp /var/lib/jenkins/workspace/Declarative_pipeline/webapp/target/webapp.war ubuntu@172.31.4.21:/var/lib/tomcat10/webapps/testapp.war'
+                    }
+                    catch(Exception e3){
+                        mail bcc: '', body: 'Jenkins failed to deploy the code', cc: '', from: '', replyTo: '', subject: 'Deployment Error', to: 'middleware@gmail.com'
+                        exit(3)
+                    }
+                }
             }
         }
-	stage('Continuous Testing') {
+        stage('Continuous Testing') {
             steps {
-                git 'https://github.com/IntelliqDevops/FunctionalTesting.git'
-                sh 'java -jar  /var/lib/jenkins/workspace/Declarative_pipeline@2/testing.jar'
+                script{
+                    try{
+                        git 'https://github.com/IntelliqDevops/FunctionalTesting.git'
+                        sh 'java -jar  /var/lib/jenkins/workspace/Declarative_pipeline@2/testing.jar'
+                    }
+                    catch(Exception e4){
+                        mail bcc: '', body: 'Jenkins failed to test the code', cc: '', from: '', replyTo: '', subject: 'Test Error', to: 'testingteam@gmail.com'
+                        exit(4)
+                    }
+                }
             }
         }
         stage('Continuous Delivery') {
             steps {
-                sh 'scp /var/lib/jenkins/workspace/Declarative_pipeline/webapp/target/webapp.war ubuntu@172.31.13.239:/var/lib/tomcat10/webapps/prodapp.war'
+                script{
+                    try{
+                        sh 'scp /var/lib/jenkins/workspace/Declarative_pipeline/webapp/target/webapp.war ubuntu@172.31.13.239:/var/lib/tomcat10/webapps/prodapp.war'
+                    }
+                    catch(Exception e5){
+                        mail bcc: '', body: 'Jenkins failed to Deliver ', cc: '', from: '', replyTo: '', subject: 'Delivery Error', to: 'deliveryteam@gmail.com'
+                        exit(5)
+                    }
+                }
             }
         }
-   }
- }
+    }
+}
+
