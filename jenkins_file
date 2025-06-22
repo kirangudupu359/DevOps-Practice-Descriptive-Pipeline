@@ -1,8 +1,8 @@
-pipeline {
+iiipipeline {
     agent any
 
     stages {
-        stage('Continuous Download') {
+        stage('Continuous Download Loans') {
             steps {
                 script{
                     try{
@@ -16,7 +16,7 @@ pipeline {
                 
             }
         }
-        stage('Continuous Build') {
+        stage('Continuous Build Loans') {
             steps {
                 script{
                     try{
